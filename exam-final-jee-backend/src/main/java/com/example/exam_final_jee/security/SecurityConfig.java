@@ -50,38 +50,38 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-//        return httpSecurity
-//                .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .csrf(csrf->csrf.disable())
-//                .cors(Customizer.withDefaults())
-//                .authorizeHttpRequests(ar->ar.requestMatchers("/auth/login/**").permitAll())
-//                .authorizeHttpRequests(ar->ar.anyRequest().authenticated())
-//                .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
-//                .build();
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(csrf->csrf
-                        .ignoringRequestMatchers("/**") // Disable CSRF for H2 console
-                        .disable()
-                )
+                .csrf(csrf->csrf.disable())
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(ar->ar
-                        .requestMatchers("/auth/login/**").permitAll()
-                        .requestMatchers("/**").permitAll() // Allow H2 console access
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(ar->ar.requestMatchers("/auth/login/**").permitAll())
+                .authorizeHttpRequests(ar->ar.anyRequest().authenticated())
                 .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
-                .headers(headers -> headers
-                        .frameOptions().disable() // Needed for H2 console iframes
-                )
                 .build();
     }
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//        return httpSecurity
+//                .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .csrf(csrf->csrf
+//                        .ignoringRequestMatchers("/**") // Disable CSRF for H2 console
+//                        .disable()
+//                )
+//                .cors(Customizer.withDefaults())
+//                .authorizeHttpRequests(ar->ar
+//                        .requestMatchers("/auth/login/**").permitAll()
+//                        .requestMatchers("/**").permitAll() // Allow H2 console access
+//                        .anyRequest().authenticated()
+//                )
+//                .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
+//                .headers(headers -> headers
+//                        .frameOptions().disable() // Needed for H2 console iframes
+//                )
+//                .build();
+//    }
 
     @Bean
     JwtEncoder jwtEncoder() {
