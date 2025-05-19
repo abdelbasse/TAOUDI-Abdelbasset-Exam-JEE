@@ -67,13 +67,13 @@ public class SecurityConfig {
         return httpSecurity
                 .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf->csrf
-                        .ignoringRequestMatchers("/h2-console/**") // Disable CSRF for H2 console
+                        .ignoringRequestMatchers("/**") // Disable CSRF for H2 console
                         .disable()
                 )
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(ar->ar
                         .requestMatchers("/auth/login/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll() // Allow H2 console access
+                        .requestMatchers("/**").permitAll() // Allow H2 console access
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
