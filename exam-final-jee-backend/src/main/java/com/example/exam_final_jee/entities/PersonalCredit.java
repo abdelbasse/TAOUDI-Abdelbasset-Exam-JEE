@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @DiscriminatorValue("PERSONAL")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PersonalCredit extends Credit {
     private String purpose; // car purchase, studies, renovations, etc.
 }

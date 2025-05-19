@@ -1,6 +1,5 @@
 package com.example.exam_final_jee.entities;
 
-
 import com.example.exam_final_jee.enums.CreditStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,8 +9,10 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
-
 @Entity
+@Data // Ajout de l'annotation Data pour générer getters/setters
+@NoArgsConstructor
+@AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "CREDIT_TYPE")
 public abstract class Credit {

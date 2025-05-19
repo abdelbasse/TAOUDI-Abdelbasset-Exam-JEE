@@ -1,6 +1,5 @@
 package com.example.exam_final_jee.security;
 
-
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +11,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,7 +28,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -54,15 +50,36 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//        return httpSecurity
+//                .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .csrf(csrf->csrf.disable())
+//                .cors(Customizer.withDefaults())
+//                .authorizeHttpRequests(ar->ar.requestMatchers("/auth/login/**").permitAll())
+//                .authorizeHttpRequests(ar->ar.anyRequest().authenticated())
+//                .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
+//                .build();
+//    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(csrf->csrf.disable())
+                .csrf(csrf->csrf
+                        .ignoringRequestMatchers("/h2-console/**") // Disable CSRF for H2 console
+                        .disable()
+                )
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(ar->ar.requestMatchers("/auth/login/**").permitAll())
-                .authorizeHttpRequests(ar->ar.anyRequest().authenticated())
+                .authorizeHttpRequests(ar->ar
+                        .requestMatchers("/auth/login/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll() // Allow H2 console access
+                        .anyRequest().authenticated()
+                )
                 .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
+                .headers(headers -> headers
+                        .frameOptions().disable() // Needed for H2 console iframes
+                )
                 .build();
     }
 
